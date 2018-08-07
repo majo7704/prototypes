@@ -17,8 +17,8 @@ const comments = [
 // constructor function is used, otherwise the object will not have the methods
 // available to them.
 //
-function Discussion() {
-
+function Discussion(initialComments) {
+  this.comments = initialComments;
 }
 
 
@@ -63,25 +63,30 @@ Discussion.prototype.renderComment = (message) => { //replacing var with Discuss
 // for the number of comments is hard-coded to 2.
 // Attach this function as a method of the Discussion prototype in task 2.
 Discussion.prototype.updateCommentCount = function () {
-  var numberOfComments = 2 + ' comments';
+  var numberOfComments = this.comments.length + ' comments'; //update 2 with this.comments.length so the number of written comments is up to the correct number
   document.querySelector('.goal__meta a').textContent = numberOfComments;
   document.querySelector('.comments__title span').textContent = numberOfComments;
 }
+Discussion.prototype.renderInitialComments = function () {
+  // Initialization: creates two comments and sets the comment count.
+  // For task 4, create a prototype that contains these three calls.
+  for (i = 0; i < this.comments.length; i++) {
+    this.renderComment(this.comments[i]); //update of references
+  }
 
-let discussion = new Discussion(); //the Dicussion variable moved here (below the assigment where we assign methods)
+  this.updateCommentCount();
+  // End of initialization
 
-// Initialization: creates two comments and sets the comment count.
-// For task 4, create a prototype that contains these three calls.
-for (i = 0; i < comments.length; i++) {
-  discussion.renderComment(comments[i]); //update of references
 }
 
-discussion.updateCommentCount();
-// End of initialization
+Discussion.prototype.addComment = function (newComment) {
+  this.comments.push(newComment); //the method adds new comment to comments array
+  this.renderComment(newComment); //it needs to render the new comment
+  this.updateCommentCount(); //updates the number of comments
 
-
-
-
+}
+let discussion = new Discussion(["I've done this and it's amazing!  I'll never forget it."]); //the Dicussion variable moved here (below the assigment where we assign methods)
+discussion.renderInitialComments(); //calling the method so the initial comments are created on the page
 
 // This prototype represents the comment input and button.  It will need to be
 // modified for tasks 4 and 8.
@@ -102,6 +107,7 @@ AddCommentForm.prototype.handleCommentSubmitted = function (e) {
   var message = this.takeAndClearMessage();
 
   // Task 4: render the comment using the Discussion prototype.
+  discussion.addComment(message);
 }
 
 new AddCommentForm();
